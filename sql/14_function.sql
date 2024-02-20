@@ -5,8 +5,18 @@
 
 CREATE OR REPLACE FUNCTION list_category(TEXT) RETURNS TABLE(title TEXT) AS
 $$
--- FIXME: implementation goes here
-SELECT title AS list_category FROM category JOIN film_category USING (category_id) JOIN film USING (film_id) WHERE name LIKE $1 || '%' ORDER BY title;
+SELECT
+    f.title AS list_category
+FROM
+    film f
+INNER JOIN
+    film_category fc ON f.film_id = fc.film_id
+INNER JOIN
+    category c ON c.category_id = fc.category_id
+WHERE
+    c.name=$1
+ORDER BY
+    f.title;
 $$
 LANGUAGE SQL
 IMMUTABLE
